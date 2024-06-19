@@ -3,6 +3,10 @@ import pandas as pd
 from sklearn.model_selection import StratifiedKFold, KFold
 from sklearn.preprocessing import StandardScaler
 
+CATEGORICAL_COLUMNS = ['Round', 'Phase', 'Individual', 'Puzzler', 'Frustrated', 'Cohort']
+NON_CATEGORICAL_COLUMNS = ['HR_Mean', 'HR_Median', 'HR_std', 'HR_Min', 'HR_Max', 'HR_AUC']
+
+
 def stratified_k_fold_split(X, y, k, random_state=None):
     """
     Split the dataset into k stratified folds.
@@ -73,9 +77,30 @@ def custom_k_fold_split(x, y, method, k=None, random_state=None):
         return stratified_k_fold_split(x, y, k, random_state)
     elif method == 'individual':
         return individual_folds(x, y)
+    
+def standardize_data(X_train: pd.DataFrame, X_test: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Standardize the specified non-categorical columns in the training and test datasets.
+    
+    Parameters:
+    X_train (pd.DataFrame): Training feature set.
+    X_test (pd.DataFrame): Test feature set.
+    
+    Returns:
+    tuple[pd.DataFrame, pd.DataFrame]: Standardized training and test datasets.
+    """
+    global NON_CATEGORICAL_COLUMNS
+    scaler = StandardScaler()
+    
+    for col in NON_CATEGORICAL_COLUMNS:
+        if col in X_train.columns and col in X_test.columns:
+            X_train[col] = scaler.fit_transform(X_train[col].values.reshape(-1, 1))
+            X_test[col] = scaler.transform(X_test[col].values.reshape(-1, 1))
+    
+    return X_train, X_test
 
 def load_data(file_path: str):
-    data = pd.read_csv(file_path, index_col=0)
+    data = pd.read_csv(file_path, index_col=0).reset_index(drop=True)
     categorical_columns = ['Round', 'Phase', 'Individual', 'Puzzler', 'Frustrated', 'Cohort']
 
     data_encoded = pd.get_dummies(data, columns=categorical_columns)
@@ -89,22 +114,3 @@ def load_data(file_path: str):
 
     y = np.argmax(y.values, axis=1)
     return X, y
-
-def standardize_data(X_train: pd.DataFrame, X_test: pd.DataFrame):
-    categorical_columns = ['Round', 'Phase', 'Individual', 'Puzzler', 'Frustrated', 'Cohort']
-    for col in X_train.columns:
-        cont = False
-        for cat_col in categorical_columns:
-            if cat_col in col:
-                cont = True
-
-        if cont:
-            continue
-        # Ensure the column is treated as numeric (float) before scaling
-        X_train.loc[:,col] = X_train.loc[:,col].astype(float)
-        X_test.loc[:,col] = X_test.loc[:,col].astype(float)
-        
-        scaler = StandardScaler()
-        X_train.loc[:, col] = scaler.fit_transform(X_train[col].values.reshape(-1, 1))
-        X_test.loc[:, col] = scaler.transform(X_test[col].values.reshape(-1, 1))
-    return X_train, X_test
