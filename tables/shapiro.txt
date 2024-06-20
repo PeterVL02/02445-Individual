@@ -1,11 +1,11 @@
-\begin{tabular}{llr}
+\begin{tabular}{llrr}
 \toprule
- & Model & Shapiro-Wilk Test p-value \\
+ & Model & MSE Shapiro-Wilk Test p-value & F1 Shapiro-Wilk Test p-value \\
 \midrule
-0 & Random Forest & 0.000000 \\
-1 & Naive Bayes & 0.000013 \\
-2 & SVC & 0.000000 \\
-3 & MLP & 0.000004 \\
-4 & Baseline & 0.000007 \\
+0 & Random Forest & 0.000000 & 0.000000 \\
+1 & Naive Bayes & 0.000017 & 0.000000 \\
+2 & SVC & 0.000000 & 0.000000 \\
+3 & MLP & 0.000011 & 0.000000 \\
+4 & Baseline & 0.000007 & 0.000000 \\
 \bottomrule
 \end{tabular}
