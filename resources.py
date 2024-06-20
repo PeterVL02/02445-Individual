@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold, KFold
 from sklearn.preprocessing import StandardScaler
+from sklearn.utils import shuffle
 
 CATEGORICAL_COLUMNS = ['Round', 'Phase', 'Individual', 'Puzzler', 'Frustrated', 'Cohort']
 NON_CATEGORICAL_COLUMNS = ['HR_Mean', 'HR_Median', 'HR_std', 'HR_Min', 'HR_Max', 'HR_AUC']
@@ -31,7 +32,7 @@ def stratified_k_fold_split(X, y, k, random_state=None):
 
 
 
-def individual_folds(X: pd.DataFrame, y: pd.DataFrame) -> list[pd.DataFrame]:
+def individual_folds(X: pd.DataFrame, y: pd.DataFrame, random_state: int) -> list[pd.DataFrame]:
     """
     Split the dataset into folds where each fold consists of all observations referring to one individual.
     
@@ -67,6 +68,10 @@ def individual_folds(X: pd.DataFrame, y: pd.DataFrame) -> list[pd.DataFrame]:
         
         X_train, X_test = X.loc[train_inds], X.loc[test_inds]
         y_train, y_test = y[train_inds], y[test_inds]
+
+        X_train, y_train = shuffle(X_train, y_train, random_state=random_state)
+        X_test, y_test = shuffle(X_test, y_test, random_state=random_state)
+
         
         folds.append((X_train, X_test, y_train, y_test))
     
@@ -76,7 +81,7 @@ def custom_k_fold_split(x, y, method, k=None, random_state=None):
     if method == 'stratified':
         return stratified_k_fold_split(x, y, k, random_state)
     elif method == 'individual':
-        return individual_folds(x, y)
+        return individual_folds(x, y, random_state=random_state)
     
 def standardize_data(X_train: pd.DataFrame, X_test: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
