@@ -1,0 +1,11 @@
+\begin{tabular}{lrr}
+\toprule
+Model & MSE Shapiro-Wilk Test p-value & WF1 Shapiro-Wilk Test p-value \\
+\midrule
+Random Forest & 7.056e-24 & 3.801e-22 \\
+Naive Bayes & 1.623e-21 & 6.969e-34 \\
+SVC & 1.817e-34 & 4.681e-34 \\
+MLP & 1.950e-17 & 1.581e-21 \\
+Baseline & 1.555e-22 & 4.542e-48 \\
+\bottomrule
+\end{tabular}

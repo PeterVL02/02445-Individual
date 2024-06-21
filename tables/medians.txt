@@ -1,0 +1,11 @@
+\begin{tabular}{lrr}
+\toprule
+Model & F1 Median & MSE Median \\
+\midrule
+Random Forest & 1.655e-01 & 3.833e+00 \\
+Naive Bayes & 1.042e-01 & 6.583e+00 \\
+SVC & 1.138e-01 & 3.250e+00 \\
+MLP & 1.574e-01 & 3.917e+00 \\
+Baseline & 1.000e-01 & 4.875e+00 \\
+\bottomrule
+\end{tabular}
